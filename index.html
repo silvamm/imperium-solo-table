@@ -36,7 +36,7 @@
         <div class="col-2">
             <h4>Macedonians</h4>
             <label class="form-label">State</label>
-                <div class="dropdown mb-2">
+                <div class="dropdown-center mb-2">
                     <button id="stateButton" class="btn btn-danger dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Barbarian
                     </button>
@@ -45,14 +45,35 @@
                         <li><a class="dropdown-item state-option" href="#" data-state="Empire">Empire</a></li>
                     </ul>
                 </div>
-                <label for="materials" class="form-label">Materials: <span id="materials-value">1</span></label>
-                <input type="range" class="form-range slider-input" id="materials" min="0" max="20" value="1">
+                <label class="form-label">Materials: <span id="materials-value">1</span></label>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <button class="btn btn-outline-secondary btn-lg w-100 counter-btn" data-action="decrease" data-target="materials" type="button">-</button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-secondary btn-lg w-100 counter-btn" data-action="increase" data-target="materials" type="button">+</button>
+                    </div>
+                </div>
 
-                <label for="population" class="form-label">Population: <span id="population-value">1</span></label>
-                <input type="range" class="form-range slider-input" id="population" min="0" max="20" value="1">
+                <label class="form-label">Population: <span id="population-value">1</span></label>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <button class="btn btn-outline-secondary btn-lg w-100 counter-btn" data-action="decrease" data-target="population" type="button">-</button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-secondary btn-lg w-100 counter-btn" data-action="increase" data-target="population" type="button">+</button>
+                    </div>
+                </div>
 
-                <label for="progress" class="form-label">Progress: <span id="progress-value">1</span></label>
-                <input type="range" class="form-range slider-input" id="progress" min="0" max="20" value="1">
+                <label class="form-label">Progress: <span id="progress-value">1</span></label>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <button class="btn btn-outline-secondary btn-lg w-100 counter-btn" data-action="decrease" data-target="progress" type="button">-</button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-secondary btn-lg w-100 counter-btn" data-action="increase" data-target="progress" type="button">+</button>
+                    </div>
+                </div>
         </div>
     </div>
 </div>
@@ -80,18 +101,13 @@
 
         // Carregar valores salvos ao iniciar
         function loadSavedValues() {
-            // Carregar contadores (sliders)
+            // Carregar contadores
             const materials = loadFromStorage('materials', '1');
             const population = loadFromStorage('population', '1');
             const progress = loadFromStorage('progress', '1');
 
-            $('#materials').val(materials);
             $('#materials-value').text(materials);
-
-            $('#population').val(population);
             $('#population-value').text(population);
-
-            $('#progress').val(progress);
             $('#progress-value').text(progress);
 
             // Carregar estado (Barbarian/Empire)
@@ -113,16 +129,21 @@
         // Carregar valores ao iniciar a página
         loadSavedValues();
 
-        // Handler para sliders
-        $('.slider-input').on('input', function() {
-            const id = $(this).attr('id');
-            const value = $(this).val();
+        // Handler para botões de contador (+/-)
+        $('.counter-btn').click(function() {
+            const action = $(this).data('action');
+            const target = $(this).data('target');
+            const $valueSpan = $('#' + target + '-value');
+            let currentValue = parseInt($valueSpan.text());
 
-            // Atualiza o display do valor
-            $('#' + id + '-value').text(value);
+            if (action === 'increase') {
+                currentValue++;
+            } else if (action === 'decrease') {
+                currentValue = Math.max(0, currentValue - 1); // Não permite valores negativos
+            }
 
-            // Salva no localStorage
-            saveToStorage(id, value);
+            $valueSpan.text(currentValue);
+            saveToStorage(target, currentValue);
         });
 
         // Handler para dropdown de estado
