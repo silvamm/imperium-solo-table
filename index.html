@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="col-2">
-            <p>Macedonians</p>
+            <h4>Macedonians</h4>
             <label for="1" class="form-label">State</label>
                 <div class="dropdown">
                     <button id="stateButton" class="btn btn-danger dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -46,40 +46,28 @@
                     </ul>
                 </div>
                 <label for="materials" class="form-label">Materials</label>
-                <div class="row">
-                    <div class="col-3">
-                        <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="materials" type="button">-</button>
-                    </div>
-                    <div class="col-6">
+                <div class="d-grid gap-2 mb-3">
+                    <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="materials" type="button">+</button>
+                    <div class="text-center py-2 fs-4">
                         <span id="materials">1</span>
                     </div>
-                    <div class="col-3">
-                        <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="materials" type="button">+</button>
-                    </div>
+                    <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="materials" type="button">-</button>
                 </div>
                 <label for="population" class="form-label">Population</label>
-                <div class="row">
-                    <div class="col-3">
-                        <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="population" type="button">-</button>
-                    </div>
-                    <div class="col-6">
+                <div class="d-grid gap-2 mb-3">
+                    <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="population" type="button">+</button>
+                    <div class="text-center py-2 fs-4">
                         <span id="population">1</span>
                     </div>
-                    <div class="col-3">
-                        <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="population" type="button">+</button>
-                    </div>
+                    <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="population" type="button">-</button>
                 </div>
                 <label for="progress" class="form-label">Progress</label>
-                <div class="row">
-                    <div class="col-3">
-                        <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="progress" type="button">-</button>
-                    </div>
-                    <div class="col-6">
+                <div class="d-grid gap-2 mb-3">
+                    <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="progress" type="button">+</button>
+                    <div class="text-center py-2 fs-4">
                         <span id="progress">1</span>
                     </div>
-                    <div class="col-3">
-                        <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="progress" type="button">+</button>
-                    </div>
+                    <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="progress" type="button">-</button>
                 </div>
         </div>
     </div>
