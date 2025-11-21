@@ -36,7 +36,7 @@
         <div class="col-2">
             <h4>Macedonians</h4>
             <label class="form-label">State</label>
-                <div class="dropdown">
+                <div class="dropdown mb-2">
                     <button id="stateButton" class="btn btn-danger dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Barbarian
                     </button>
@@ -45,30 +45,14 @@
                         <li><a class="dropdown-item state-option" href="#" data-state="Empire">Empire</a></li>
                     </ul>
                 </div>
-                <label for="materials" class="form-label">Materials</label>
-                <div class="d-grid gap-2 mb-3">
-                    <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="materials" type="button">+</button>
-                    <div class="text-center py-2 fs-4">
-                        <span id="materials">1</span>
-                    </div>
-                    <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="materials" type="button">-</button>
-                </div>
-                <label for="population" class="form-label">Population</label>
-                <div class="d-grid gap-2 mb-3">
-                    <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="population" type="button">+</button>
-                    <div class="text-center py-2 fs-4">
-                        <span id="population">1</span>
-                    </div>
-                    <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="population" type="button">-</button>
-                </div>
-                <label for="progress" class="form-label">Progress</label>
-                <div class="d-grid gap-2 mb-3">
-                    <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="progress" type="button">+</button>
-                    <div class="text-center py-2 fs-4">
-                        <span id="progress">1</span>
-                    </div>
-                    <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="progress" type="button">-</button>
-                </div>
+                <label for="materials" class="form-label">Materials: <span id="materials-value">1</span></label>
+                <input type="range" class="form-range slider-input" id="materials" min="0" max="20" value="1">
+
+                <label for="population" class="form-label">Population: <span id="population-value">1</span></label>
+                <input type="range" class="form-range slider-input" id="population" min="0" max="20" value="1">
+
+                <label for="progress" class="form-label">Progress: <span id="progress-value">1</span></label>
+                <input type="range" class="form-range slider-input" id="progress" min="0" max="20" value="1">
         </div>
     </div>
 </div>
@@ -96,10 +80,19 @@
 
         // Carregar valores salvos ao iniciar
         function loadSavedValues() {
-            // Carregar contadores
-            $('#materials').text(loadFromStorage('materials', '1'));
-            $('#population').text(loadFromStorage('population', '1'));
-            $('#progress').text(loadFromStorage('progress', '1'));
+            // Carregar contadores (sliders)
+            const materials = loadFromStorage('materials', '1');
+            const population = loadFromStorage('population', '1');
+            const progress = loadFromStorage('progress', '1');
+
+            $('#materials').val(materials);
+            $('#materials-value').text(materials);
+
+            $('#population').val(population);
+            $('#population-value').text(population);
+
+            $('#progress').val(progress);
+            $('#progress-value').text(progress);
 
             // Carregar estado (Barbarian/Empire)
             const savedState = loadFromStorage('state', 'Barbarian');
@@ -120,21 +113,16 @@
         // Carregar valores ao iniciar a página
         loadSavedValues();
 
-        // Handler para botões de contador (+/-)
-        $('.counter-btn').click(function() {
-            const action = $(this).data('action');
-            const target = $(this).data('target');
-            const $span = $('#' + target);
-            let currentValue = parseInt($span.text());
+        // Handler para sliders
+        $('.slider-input').on('input', function() {
+            const id = $(this).attr('id');
+            const value = $(this).val();
 
-            if (action === 'increase') {
-                currentValue++;
-            } else if (action === 'decrease') {
-                currentValue = Math.max(0, currentValue - 1); // Não permite valores negativos
-            }
+            // Atualiza o display do valor
+            $('#' + id + '-value').text(value);
 
-            $span.text(currentValue);
-            saveToStorage(target, currentValue);
+            // Salva no localStorage
+            saveToStorage(id, value);
         });
 
         // Handler para dropdown de estado
