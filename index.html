@@ -14,10 +14,13 @@
             <div id="carouselExample" class="carousel slide">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="images/img_1.png" class="d-block w-100" alt="...">
+                        <img id="nationImage" src="images/macedonians_barbarian.png" class="d-block w-100" alt="...">
                     </div>
                     <div class="carousel-item">
-                        <img src="images/img.png" height="500" class="d-block w-100" alt="...">
+                        <img src="images/bot_turn.png" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="images/player_turn.png" class="d-block w-100" alt="...">
                     </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
@@ -34,48 +37,48 @@
             <p>Macedonians</p>
             <label for="1" class="form-label">State</label>
                 <div class="dropdown">
-                    <button class="btn btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button id="stateButton" class="btn btn-danger dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Barbarian
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Barbarian</a></li>
-                        <li><a class="dropdown-item" href="#">Empire</a></li>
+                        <li><a class="dropdown-item state-option" href="#" data-state="Barbarian">Barbarian</a></li>
+                        <li><a class="dropdown-item state-option" href="#" data-state="Empire">Empire</a></li>
                     </ul>
                 </div>
-                <label for="1" class="form-label">Materials</label>
+                <label for="materials" class="form-label">Materials</label>
                 <div class="row">
                     <div class="col-3">
-                        <button class="btn btn-outline-secondary" type="button">-</button>
+                        <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="materials" type="button">-</button>
                     </div>
                     <div class="col-6">
-                        <span id="1">1</span>
+                        <span id="materials">1</span>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-outline-secondary" type="button">+</button>
+                        <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="materials" type="button">+</button>
                     </div>
                 </div>
-                <label for="1" class="form-label">Population</label>
+                <label for="population" class="form-label">Population</label>
                 <div class="row">
                     <div class="col-3">
-                        <button class="btn btn-outline-secondary" type="button">-</button>
+                        <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="population" type="button">-</button>
                     </div>
                     <div class="col-6">
-                        <span id="1">1</span>
+                        <span id="population">1</span>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-outline-secondary" type="button">+</button>
+                        <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="population" type="button">+</button>
                     </div>
                 </div>
-                <label for="1" class="form-label">Progress</label>
+                <label for="progress" class="form-label">Progress</label>
                 <div class="row">
                     <div class="col-3">
-                        <button class="btn btn-outline-secondary" type="button">-</button>
+                        <button class="btn btn-outline-secondary counter-btn" data-action="decrease" data-target="progress" type="button">-</button>
                     </div>
                     <div class="col-6">
-                        <span id="1">1</span>
+                        <span id="progress">1</span>
                     </div>
                     <div class="col-3">
-                        <button class="btn btn-outline-secondary" type="button">+</button>
+                        <button class="btn btn-outline-secondary counter-btn" data-action="increase" data-target="progress" type="button">+</button>
                     </div>
                 </div>
         </div>
@@ -90,5 +93,87 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        // Função para salvar no localStorage
+        function saveToStorage(key, value) {
+            localStorage.setItem(key, value);
+        }
+
+        // Função para carregar do localStorage
+        function loadFromStorage(key, defaultValue) {
+            const value = localStorage.getItem(key);
+            return value !== null ? value : defaultValue;
+        }
+
+        // Carregar valores salvos ao iniciar
+        function loadSavedValues() {
+            // Carregar contadores
+            $('#materials').text(loadFromStorage('materials', '1'));
+            $('#population').text(loadFromStorage('population', '1'));
+            $('#progress').text(loadFromStorage('progress', '1'));
+
+            // Carregar estado (Barbarian/Empire)
+            const savedState = loadFromStorage('state', 'Barbarian');
+            const button = $('#stateButton');
+            const image = $('#nationImage');
+
+            button.text(savedState);
+
+            if (savedState === 'Empire') {
+                button.removeClass('btn-danger').addClass('btn-info');
+                image.attr('src', 'images/macedonians_empire.png');
+            } else {
+                button.removeClass('btn-info').addClass('btn-danger');
+                image.attr('src', 'images/macedonians_barbarian.png');
+            }
+        }
+
+        // Carregar valores ao iniciar a página
+        loadSavedValues();
+
+        // Handler para botões de contador (+/-)
+        $('.counter-btn').click(function() {
+            const action = $(this).data('action');
+            const target = $(this).data('target');
+            const $span = $('#' + target);
+            let currentValue = parseInt($span.text());
+
+            if (action === 'increase') {
+                currentValue++;
+            } else if (action === 'decrease') {
+                currentValue = Math.max(0, currentValue - 1); // Não permite valores negativos
+            }
+
+            $span.text(currentValue);
+            saveToStorage(target, currentValue);
+        });
+
+        // Handler para dropdown de estado
+        $('.state-option').click(function(e) {
+            e.preventDefault();
+
+            const state = $(this).data('state');
+            const button = $('#stateButton');
+            const image = $('#nationImage');
+
+            // Atualiza o texto do botão
+            button.text(state);
+
+            if (state === 'Empire') {
+                // Muda para cor info (azul) e imagem macedonians_empire.png
+                button.removeClass('btn-danger').addClass('btn-info');
+                image.attr('src', 'images/macedonians_empire.png');
+            } else if (state === 'Barbarian') {
+                // Volta para cor danger (vermelho) e imagem macedonians_barbarian.png
+                button.removeClass('btn-info').addClass('btn-danger');
+                image.attr('src', 'images/macedonians_barbarian.png');
+            }
+
+            // Salva o estado no localStorage
+            saveToStorage('state', state);
+        });
+    });
+</script>
 </body>
 </html>
