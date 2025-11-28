@@ -34,15 +34,25 @@
             </div>
         </div>
         <div class="col-2">
-            <h4>Macedonians</h4>
+            <label class="form-label">Nation</label>
+                <div class="dropdown-center mb-2">
+                    <button id="nationButton" class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Macedonians
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item nation-option" href="#" data-nation="macedonians">Macedonians</a></li>
+                        <li><a class="dropdown-item nation-option" href="#" data-nation="romans">Romans</a></li>
+                        <li><a class="dropdown-item nation-option" href="#" data-nation="persians">Persians</a></li>
+                    </ul>
+                </div>
             <label class="form-label">State</label>
                 <div class="dropdown-center mb-2">
                     <button id="stateButton" class="btn btn-danger dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Barbarian
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item state-option" href="#" data-state="Barbarian">Barbarian</a></li>
-                        <li><a class="dropdown-item state-option" href="#" data-state="Empire">Empire</a></li>
+                        <li><a class="dropdown-item state-option" href="#" data-state="barbarian">Barbarian</a></li>
+                        <li><a class="dropdown-item state-option" href="#" data-state="empire">Empire</a></li>
                     </ul>
                 </div>
                 <label class="form-label">Materials: <span id="materials-value">1</span></label>
@@ -99,31 +109,48 @@
             return value !== null ? value : defaultValue;
         }
 
+        // Função para capitalizar primeira letra
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Função para atualizar a imagem baseada na nação e estado
+        function updateImage(nation, state) {
+            const imagePath = `images/${nation}_${state}.png`;
+            $('#nationImage').attr('src', imagePath);
+        }
+
         // Carregar valores salvos ao iniciar
         function loadSavedValues() {
             // Carregar contadores
-            const materials = loadFromStorage('materials', '1');
-            const population = loadFromStorage('population', '1');
-            const progress = loadFromStorage('progress', '1');
+            const materials = loadFromStorage('materials', '0');
+            const population = loadFromStorage('population', '0');
+            const progress = loadFromStorage('progress', '0');
 
             $('#materials-value').text(materials);
             $('#population-value').text(population);
             $('#progress-value').text(progress);
 
-            // Carregar estado (Barbarian/Empire)
-            const savedState = loadFromStorage('state', 'Barbarian');
-            const button = $('#stateButton');
-            const image = $('#nationImage');
+            // Carregar nação
+            const savedNation = loadFromStorage('nation', 'macedonians');
+            const nationButton = $('#nationButton');
 
-            button.text(savedState);
+            nationButton.text(capitalize(savedNation));
 
-            if (savedState === 'Empire') {
-                button.removeClass('btn-danger').addClass('btn-info');
-                image.attr('src', 'images/macedonians_empire.png');
+            // Carregar estado
+            const savedState = loadFromStorage('state', 'barbarian');
+            const stateButton = $('#stateButton');
+
+            stateButton.text(capitalize(savedState));
+
+            if (savedState === 'empire') {
+                stateButton.removeClass('btn-danger').addClass('btn-info');
             } else {
-                button.removeClass('btn-info').addClass('btn-danger');
-                image.attr('src', 'images/macedonians_barbarian.png');
+                stateButton.removeClass('btn-info').addClass('btn-danger');
             }
+
+            // Atualizar imagem
+            updateImage(savedNation, savedState);
         }
 
         // Carregar valores ao iniciar a página
@@ -146,29 +173,46 @@
             saveToStorage(target, currentValue);
         });
 
+        // Handler para dropdown de nação
+        $('.nation-option').click(function(e) {
+            e.preventDefault();
+
+            const nation = $(this).data('nation');
+            const nationButton = $('#nationButton');
+
+            // Atualiza o texto do botão e título
+            nationButton.text(capitalize(nation));
+
+            // Salva a nação no localStorage
+            saveToStorage('nation', nation);
+
+            // Atualiza a imagem com o estado atual
+            const currentState = loadFromStorage('state', 'barbarian');
+            updateImage(nation, currentState);
+        });
+
         // Handler para dropdown de estado
         $('.state-option').click(function(e) {
             e.preventDefault();
 
             const state = $(this).data('state');
-            const button = $('#stateButton');
-            const image = $('#nationImage');
+            const stateButton = $('#stateButton');
 
             // Atualiza o texto do botão
-            button.text(state);
+            stateButton.text(capitalize(state));
 
-            if (state === 'Empire') {
-                // Muda para cor info (azul) e imagem macedonians_empire.png
-                button.removeClass('btn-danger').addClass('btn-info');
-                image.attr('src', 'images/macedonians_empire.png');
-            } else if (state === 'Barbarian') {
-                // Volta para cor danger (vermelho) e imagem macedonians_barbarian.png
-                button.removeClass('btn-info').addClass('btn-danger');
-                image.attr('src', 'images/macedonians_barbarian.png');
+            if (state === 'empire') {
+                stateButton.removeClass('btn-danger').addClass('btn-info');
+            } else {
+                stateButton.removeClass('btn-info').addClass('btn-danger');
             }
 
             // Salva o estado no localStorage
             saveToStorage('state', state);
+
+            // Atualiza a imagem com a nação atual
+            const currentNation = loadFromStorage('nation', 'macedonians');
+            updateImage(currentNation, state);
         });
     });
 </script>
