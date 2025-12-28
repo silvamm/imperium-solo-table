@@ -85,6 +85,11 @@
                         <button class="btn btn-outline-secondary btn-lg w-100 counter-btn" data-action="increase" data-target="progress" type="button">+</button>
                     </div>
                 </div>
+            <div class="row g-2 mb-3">
+                <div class="col-12">
+                    <button id="resetAllBtn" class="btn btn-outline-secondary btn-lg w-100" type="button">Reset All</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -214,6 +219,21 @@
             // Atualiza a imagem com a nação atual
             const currentNation = loadFromStorage('nation', 'macedonians');
             updateImage(currentNation, state);
+        });
+
+        // Handler para botão Reset All
+        $('#resetAllBtn').click(function() {
+            if (confirm('Are you sure you want to reset all points to 0?')) {
+                // Reseta todos os valores para 0
+                $('#materials-value').text('0');
+                $('#population-value').text('0');
+                $('#progress-value').text('0');
+
+                // Salva os valores resetados no localStorage
+                saveToStorage('materials', '0');
+                saveToStorage('population', '0');
+                saveToStorage('progress', '0');
+            }
         });
     });
 </script>
